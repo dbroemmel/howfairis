@@ -16,11 +16,13 @@ class Repo:
         url: URL of a code repository such as https://github.com/fair-software/howfairis
         branch: Branch to checkout. Defaults to default branch of the repository.
             Can also be a commit SHA-1 hash or tag.
+        self_managed: FQHN of self-managed GitLab instance such as my.gitlab.tld
         path: Path inside repository. Defaults to root.
 
     Attributes:
         url (str): URL of a code repository,
         branch (str, None): Branch to checkout. If None then :attr:`Repo.default_branch` will be used.
+        instance (str, None): FQHN of a self-managed GitLab instance. If None then assume 'gitlab.com'.
         path (str): Path inside repository.
         platform (.code_repository_platforms.Platform): Detected code repository platform of repo.
         owner (str): Owner of the repo.
@@ -34,15 +36,16 @@ class Repo:
 
     # pylint: disable=too-many-instance-attributes
     def __init__(
-        self, url: str, branch: Optional[str] = None, path: Optional[str] = None
+        self, url: str, branch: Optional[str] = None, self_managed: Optional[str] = None, path: Optional[str] = None
     ):
 
         # run assertions on user input
-        Repo._check_assertions(url)
+        Repo._check_assertions(url, self_managed)
 
         # assign arguments to instance members
         self.url = url
         self.branch = branch
+        self.instance = "gitlab.com" if self_managed is None else self_managed
         self.path = "" if path is None else "/" + path.strip("/")
 
         # assign remaining members as needed
@@ -55,21 +58,24 @@ class Repo:
         self.reuse_url = self._derive_reuse_url()
 
     @staticmethod
-    def _check_assertions(url):
-        assert url.startswith("https://"), "url should start with https://"
+    def _check_assertions(url, self_managed = None):
+        self_managed = "gitlab.com" if self_managed is None else self_managed
+        assert not self_managed.startswith("https://"), "self-managed instance should be provided without https://"
+        assert url.startswith("https://"), "URL should start with https://"
         assert True in [
             url.startswith("https://github.com"),
-            url.startswith("https://gitlab.com"),
-        ], "Repository should be on github.com or on gitlab.com."
-        assert re.search(
-            "^https://git(hub|lab).com/[^/]+/[^/]+", url
-        ), "url is not a repository"
+            url.startswith(f"https://{self_managed}"),
+        ], f"Repository should be on github.com or on {self_managed}."
+        assert (
+            re.search("^https://git(hub|lab).com/[^/]+/[^/]+", url) or
+            re.search("^https://"+self_managed+"/[^/]+/[^/]+", url)
+        ), f"URL is not a repository ({url})."
 
     def _derive_api(self):
         if self.platform == Platform.GITHUB:
             api = f"https://api.github.com/repos/{self.owner}/{self.repo}"
         elif self.platform == Platform.GITLAB:
-            api = f"https://gitlab.com/api/v4/projects/{self.owner}%2F{self.repo}"
+            api = f"https://{self.instance}/api/v4/projects/{self.owner}%2F{self.repo}"
         return api
 
     def _derive_reuse_url(self):
@@ -89,7 +95,7 @@ class Repo:
         elif self.platform == Platform.GITLAB:
             try:
                 owner, repo = (
-                    self.url.replace("https://gitlab.com", "").strip("/").split("/")[:2]
+                    self.url.replace(f"https://{self.instance}", "").strip("/").split("/")[:2]
                 )
             except ValueError as ex:
                 raise ValueError("Bad value for input argument URL.") from ex
@@ -103,7 +109,7 @@ class Repo:
         if self.url.startswith("https://github.com"):
             return Platform.GITHUB
 
-        if self.url.startswith("https://gitlab.com"):
+        if self.url.startswith(f"https://{self.instance}"):
             return Platform.GITLAB
 
         return None
@@ -122,7 +128,7 @@ class Repo:
             )
 
         elif self.platform == Platform.GITLAB:
-            raw_url_format_string = f"https://gitlab.com/{self.owner}/{self.repo}/-/raw/{branch}{self.path}/{{0}}"
+            raw_url_format_string = f"https://{self.instance}/{self.owner}/{self.repo}/-/raw/{branch}{self.path}/{{0}}"
 
         return raw_url_format_string
 
