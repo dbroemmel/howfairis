@@ -16,13 +16,13 @@ class Repo:
         url: URL of a code repository such as https://github.com/fair-software/howfairis
         branch: Branch to checkout. Defaults to default branch of the repository.
             Can also be a commit SHA-1 hash or tag.
-        self_managed: FQHN of self-managed GitLab instance such as my.gitlab.tld
+        self_hosted: FQHN of self-hosted GitLab instance such as my.gitlab.tld
         path: Path inside repository. Defaults to root.
 
     Attributes:
         url (str): URL of a code repository,
         branch (str, None): Branch to checkout. If None then :attr:`Repo.default_branch` will be used.
-        instance (str, None): FQHN of a self-managed GitLab instance. If None then assume 'gitlab.com'.
+        instance (str, None): FQHN of a self-hosted GitLab instance. If None then assume 'gitlab.com'.
         path (str): Path inside repository.
         platform (.code_repository_platforms.Platform): Detected code repository platform of repo.
         owner (str): Owner of the repo.
@@ -36,16 +36,18 @@ class Repo:
 
     # pylint: disable=too-many-instance-attributes
     def __init__(
-        self, url: str, branch: Optional[str] = None, self_managed: Optional[str] = None, path: Optional[str] = None
+        self, url: str, branch: Optional[str] = None,
+        self_hosted: Optional[str] = None,
+        path: Optional[str] = None
     ):
 
         # run assertions on user input
-        Repo._check_assertions(url, self_managed)
+        Repo._check_assertions(url, self_hosted)
 
         # assign arguments to instance members
         self.url = url
         self.branch = branch
-        self.instance = "gitlab.com" if self_managed is None else self_managed
+        self.instance = "gitlab.com" if self_hosted is None else self_hosted
         self.path = "" if path is None else "/" + path.strip("/")
 
         # assign remaining members as needed
@@ -58,17 +60,17 @@ class Repo:
         self.reuse_url = self._derive_reuse_url()
 
     @staticmethod
-    def _check_assertions(url, self_managed = None):
-        self_managed = "gitlab.com" if self_managed is None else self_managed
-        assert not self_managed.startswith("https://"), "self-managed instance should be provided without https://"
+    def _check_assertions(url, self_hosted):
+        self_hosted = "gitlab.com" if self_hosted is None else self_hosted
+        assert not self_hosted.startswith("https://"), "self-hosted instance should be provided without https://"
         assert url.startswith("https://"), "URL should start with https://"
         assert True in [
             url.startswith("https://github.com"),
-            url.startswith(f"https://{self_managed}"),
-        ], f"Repository should be on github.com or on {self_managed}."
+            url.startswith(f"https://{self_hosted}"),
+        ], f"Repository should be on github.com or on {self_hosted}."
         assert (
             re.search("^https://git(hub|lab).com/[^/]+/[^/]+", url) or
-            re.search("^https://"+self_managed+"/[^/]+/[^/]+", url)
+            re.search("^https://"+self_hosted+"/[^/]+/[^/]+", url)
         ), f"URL is not a repository ({url})."
 
     def _derive_api(self):

@@ -24,8 +24,8 @@ from howfairis.repo import Repo
               help="Show default configuration and exit.")
 @click.option("-i", "--ignore-repo-config", default=False, is_flag=True,
               help="Ignore any configuration files on the remote.")
-@click.option("-s", "--self-managed", default=None, type=click.STRING,
-              help="URL of a self-managed GitLab instance to use. This may not work, depending on the "
+@click.option("-s", "--self-hosted", default=None, type=click.STRING,
+              help="URL of a self-hosted GitLab instance to use. This may not work, depending on the "
                    "server version. Expect errors if unsupported features are requried.")
 @click.option("-p", "--path", default=None, type=click.STRING,
               help="Relative path (on the remote). Use this if you want howfairis to look for a "
@@ -43,7 +43,7 @@ from howfairis.repo import Repo
 @click.option("-v", "--version", default=False, is_flag=True,
               help="Show version and exit.")
 @click.argument("url", required=False)
-def cli(url=None, branch=None, user_config_filename=None, repo_config_filename=None, self_managed=None, path=None,
+def cli(url=None, branch=None, user_config_filename=None, repo_config_filename=None, self_hosted=None, path=None,
         show_trace=False, json_output=False, version=False, ignore_repo_config=False, show_default_config=False, quiet=False):
 
     """Determine compliance with recommendations from fair-software.eu for the repository at URL. The following
@@ -72,9 +72,9 @@ def cli(url=None, branch=None, user_config_filename=None, repo_config_filename=N
         quiet = True
 
     init_terminal_colors()
-    repo = Repo(url, branch, self_managed, path)
+    repo = Repo(url, branch, self_hosted, path)
 
-    print_feedback_about_repo_args(url, branch, self_managed, path, is_quiet=quiet)
+    print_feedback_about_repo_args(url, branch, self_hosted, path, is_quiet=quiet)
     print_feedback_about_config_args(ignore_repo_config, repo_config_filename,
                                      user_config_filename, is_quiet=quiet)
 
