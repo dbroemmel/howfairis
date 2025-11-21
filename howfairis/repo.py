@@ -75,7 +75,7 @@ class Repo:
         if self.platform == Platform.GITHUB:
             api = f"https://api.github.com/repos/{self.owner}/{self.repo}"
         elif self.platform == Platform.GITLAB:
-            api = f"https://{self.instance}/api/v4/projects/{self.owner.replace("/","%2F")}%2F{self.repo}"
+            api = f"https://{self.instance}/api/v4/projects/{self.owner.replace('/','%2F')}%2F{self.repo}"
         return api
 
     def _derive_reuse_url(self):
