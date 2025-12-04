@@ -63,7 +63,7 @@ class Repo:
     def _check_assertions(url, self_hosted):
         self_hosted = "gitlab.com" if self_hosted is None else self_hosted
         assert not self_hosted.startswith("https://"), "self-hosted instance should be provided without https://"
-        assert url.startswith("https://"), "URL should start with https://"
+        assert url.startswith("https://"), "url should start with https://"
         assert True in [
             url.startswith("https://github.com"),
             url.startswith(f"https://{self_hosted}"),
@@ -71,7 +71,7 @@ class Repo:
         assert (
             re.search("^https://git(hub|lab).com/[^/]+/[^/]+", url) or
             re.search("^https://"+self_hosted+"/[^/]+/[^/]+", url)
-        ), f"URL is not a repository ({url})."
+        ), f"url is not a repository"
 
     def _derive_api(self):
         if self.platform == Platform.GITHUB:
