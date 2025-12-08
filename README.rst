@@ -248,7 +248,6 @@ Which then shows something like:
       * https://github.com
 
       * https://gitlab.com
-      * https://gitlab.com
 
       * a self-hosted GitLab instance (provided the required features are
         supported, expect errors). The instance needs to be supplied as option.
