@@ -16,13 +16,13 @@ class Repo:
         url: URL of a code repository such as https://github.com/fair-software/howfairis
         branch: Branch to checkout. Defaults to default branch of the repository.
             Can also be a commit SHA-1 hash or tag.
-        self_hosted: FQHN of self-hosted GitLab instance such as my.gitlab.tld
+        self_hosted: FQDN of self-hosted GitLab instance such as my.gitlab.tld
         path: Path inside repository. Defaults to root.
 
     Attributes:
         url (str): URL of a code repository,
         branch (str, None): Branch to checkout. If None then :attr:`Repo.default_branch` will be used.
-        instance (str, None): FQHN of a self-hosted GitLab instance. If None then assume 'gitlab.com'.
+        instance (str, None): FQDN of a self-hosted GitLab instance. If None then assume 'gitlab.com'.
         path (str): Path inside repository.
         platform (.code_repository_platforms.Platform): Detected code repository platform of repo.
         owner (str): Owner of the repo.
