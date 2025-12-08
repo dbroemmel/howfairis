@@ -8,6 +8,7 @@ def print_call_to_action(previous_compliance, current_compliance, checker, is_qu
         return 1
 
     message = "Failed to compare current and previous compliance."
+    sys_exit_code = 1
 
     if checker.repo.platform == Platform.GITHUB:
         badge = current_compliance.calc_badge(checker.readme.file_format)
@@ -79,6 +80,7 @@ def print_call_to_action(previous_compliance, current_compliance, checker, is_qu
                       "fair-software.eu badge in your " + \
                       f"{checker.readme.filename} or project badges. Please replace it with the following snippet:\n\n{badge}" + \
                       f"or adjust the project settings to\n{project_badge}"
+            sys_exit_code = 1
 
     if not is_quiet:
         print("\nCalculated compliance: " + " ".join(current_compliance.as_unicode()) + "\n")
