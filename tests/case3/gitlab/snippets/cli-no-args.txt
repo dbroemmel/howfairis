@@ -28,5 +28,6 @@ url: https://gitlab.com/fair-software/repo1
 
 Calculated compliance: ● ● ● ● ●
 
-Expected badge is equal to the actual badge(s). It's all good.
-
+Congratulations! The compliance of your repository exceeds the current fair-software.eu badge in your project badges. You can adjust the project settings to
+Link: https://fair-software.eu
+Badge image URL: https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F-green
