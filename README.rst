@@ -99,8 +99,7 @@ you should be able to call the executable, like so:
 3. self-hosted GitLab instances
 
 Self-hosted GitLab instances will rely on the required features being supported,
-expect errors if this is not the case. The instance needs to be supplied as
-command line option.
+expect errors if this is not the case.
 
 Docker
 ---------------
@@ -250,7 +249,7 @@ Which then shows something like:
       * https://gitlab.com
 
       * a self-hosted GitLab instance (provided the required features are
-        supported, expect errors). The instance needs to be supplied as option.
+        supported, expect errors)
 
     Options:
       -b, --branch TEXT               Which git branch to use. Also accepts other
@@ -266,10 +265,10 @@ Which then shows something like:
       -i, --ignore-repo-config        Ignore any configuration files on the
                                       remote.
 
-      -s, --self-hosted TEXT          URL of a self-hosted GitLab instance to use.
-                                      This may not work, depending on the server
-                                      version. Expect errors if unsupported
-                                      features are requried.
+      -s, --self-hosted               Use a self-hosted GitLab instance, guessing
+                                      the FQDN to use. This may not work,
+                                      depending on the server version. Expect
+                                      errors if unsupported features are requried.
 
       -p, --path TEXT                 Relative path (on the remote). Use this if
                                       you want howfairis to look for a README and

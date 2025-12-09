@@ -9,8 +9,8 @@ def print_feedback_about_repo_args(url, branch, self_hosted, path, is_quiet=Fals
         if url is not None:
             print("url: " + url)
 
-        if self_hosted is not None:
-            print("self-hosted instance: " + self_hosted)
+        if self_hosted:
+            print("using self-hosted instance")
 
         if branch is not None:
             print("branch: " + branch)
